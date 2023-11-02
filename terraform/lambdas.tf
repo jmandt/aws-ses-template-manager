@@ -25,12 +25,24 @@ resource "aws_iam_policy" "ses_send_templated_email" {
   policy      = data.aws_iam_policy_document.ses_send_templated_email_policy.json
 }
 
-module "lambda_function" {
+# Python Lambda Function
+module "python_lambda_function" {
   source = "terraform-aws-modules/lambda/aws"
   function_name = "PythonSesEmailSender"
   source_path   = "${path.module}/../lambdas/python/"
   handler       = "main.lambda_handler"
   runtime       = "python3.11"
+  attach_policy = true
+  policy        = aws_iam_policy.ses_send_templated_email.arn
+}
+
+
+module "js_lambda_function" {
+  source = "terraform-aws-modules/lambda/aws"
+  function_name = "JavaScriptSesEmailSender"
+  source_path   = "${path.module}/../lambdas/js/"
+  handler       = "index.lambdaHandler"
+  runtime       = "nodejs18.x"
   attach_policy = true
   policy        = aws_iam_policy.ses_send_templated_email.arn
 }

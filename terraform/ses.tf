@@ -9,4 +9,3 @@ resource "aws_ses_template" "semplates_demo_template" {
   subject = "Semplates Test Lambda Function"
   html    = file("${path.module}/static/demo_template.html")
 }
-

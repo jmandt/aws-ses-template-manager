@@ -38,15 +38,12 @@ jobs:
           docker run --rm \
             -e GOOS=linux \
             -e GOARCH=amd64 \
-            -v "${{ github.workspace }}/lambdas/go:/app" \
+            -v "${PWD}:/app" \
             -w /app golang:1.21.3 \
-            go build -ldflags="-s -w" -o /app/bin/aws-lambda-go .
-        env:
-          GO111MODULE: on
-          CGO_ENABLED: 0
+            go build -ldflags="-s -w" -o bin/aws-lambda-go .
         working-directory: ./lambdas/go
 
-        # Install tree and print the source tree
+      # Install tree and print the source tree
       - name: Print source tree
         run: |
           sudo apt-get install tree
@@ -84,3 +81,10 @@ jobs:
             -var="aws_region=${{ github.event.inputs.aws_region }}" \
             -var="programming_languages=${{ github.event.inputs.programming_languages }}"
         working-directory: ./terraform
+
+      # Upload Terraform state to GitHub Artifacts
+      - name: Upload Terraform State
+        uses: actions/upload-artifact@v3
+        with:
+          name: terraform-state
+          path: ./terraform/*.tfstate

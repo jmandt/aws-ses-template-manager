@@ -5,3 +5,7 @@ variable "aws_region" {
 variable "verified_email" {
   type = string
 }
+
+variable "programming_languages" {
+  type = string
+}
